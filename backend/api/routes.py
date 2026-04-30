@@ -15,8 +15,11 @@ async def health_check() -> HealthResponse:
 @router.post("/query", response_model=QueryResponse)
 async def query(request: QueryRequest) -> QueryResponse:
     try:
-        answer = await get_agent_service().answer(request.message)
-        return QueryResponse(answer=answer)
+        session_id, answer = await get_agent_service().answer(
+            request.message,
+            session_id=request.session_id,
+        )
+        return QueryResponse(answer=answer, session_id=session_id)
     except Exception as exc:  # pragma: no cover - surfaced as API failure
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

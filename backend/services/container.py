@@ -3,6 +3,7 @@ from functools import lru_cache
 from backend.config import get_settings
 from backend.mcp.client import McpHttpClient
 from backend.services.agent_service import AgentService
+from backend.services.memory_service import MemoryService
 
 
 @lru_cache
@@ -12,4 +13,9 @@ def get_mcp_client() -> McpHttpClient:
 
 @lru_cache
 def get_agent_service() -> AgentService:
-    return AgentService(get_settings(), get_mcp_client())
+    return AgentService(get_settings(), get_mcp_client(), get_memory_service())
+
+
+@lru_cache
+def get_memory_service() -> MemoryService:
+    return MemoryService(get_settings())

@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 from backend.config import Settings
 from backend.mcp.client import McpHttpClient
+from backend.services.memory_service import MemoryService
 
 
 class OrderItemInput(BaseModel):
@@ -17,15 +18,31 @@ class OrderItemInput(BaseModel):
 
 
 class AgentService:
-    def __init__(self, settings: Settings, mcp_client: McpHttpClient) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        mcp_client: McpHttpClient,
+        memory_service: MemoryService,
+    ) -> None:
         self.settings = settings
         self.mcp_client = mcp_client
+        self.memory_service = memory_service
         set_default_openai_key(settings.openai_api_key)
 
-    async def answer(self, message: str) -> str:
+    async def answer(
+        self,
+        message: str,
+        *,
+        session_id: str | None = None,
+    ) -> tuple[str, str]:
+        active_session_id = session_id or self.memory_service.create_session_id()
+        history = await self.memory_service.load_messages(active_session_id)
         agent = self._build_agent()
-        result = await Runner.run(agent, input=message)
-        return str(result.final_output)
+        prompt = self._build_agent_input(message, history)
+        result = await Runner.run(agent, input=prompt)
+        answer = str(result.final_output)
+        await self.memory_service.append_turn(active_session_id, message, answer)
+        return active_session_id, answer
 
     def _build_agent(self) -> Agent:
         @function_tool
@@ -131,4 +148,15 @@ Rules:
                 get_order,
                 create_order,
             ],
+        )
+
+    def _build_agent_input(self, message: str, history: list[Any]) -> str:
+        conversation_history = self.memory_service.format_history(history)
+        if not conversation_history:
+            return message
+        return (
+            "Conversation history:\n"
+            f"{conversation_history}\n\n"
+            "Latest user message:\n"
+            f"{message}"
         )

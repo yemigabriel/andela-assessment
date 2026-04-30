@@ -1,4 +1,5 @@
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -8,6 +9,9 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4.1-mini"
     mcp_server_url: str = "https://order-mcp-74afyau24q-uc.a.run.app/mcp"
     agent_name: str = "Meridian Electronics Support Agent"
+    memory_dir: Path = Path("memory")
+    memory_s3_bucket: str | None = None
+    aws_region: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",
