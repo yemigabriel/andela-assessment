@@ -25,3 +25,15 @@ variable "lambda_package_path" {
   type        = string
   default     = "../dist/backend.zip"
 }
+
+variable "openai_api_key" {
+  description = "OpenAI API key for the backend Lambda"
+  type        = string
+  sensitive   = true
+}
+
+variable "cors_allow_origins" {
+  description = "Comma-separated or JSON-array CORS origins for the backend"
+  type        = string
+  default     = "http://localhost:3000"
+}

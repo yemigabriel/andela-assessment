@@ -87,8 +87,10 @@ resource "aws_lambda_function" "backend" {
 
   environment {
     variables = {
-      MEMORY_S3_BUCKET = aws_s3_bucket.memory.bucket
-      AWS_REGION       = var.aws_region
+      OPENAI_API_KEY     = var.openai_api_key
+      CORS_ALLOW_ORIGINS = var.cors_allow_origins
+      MEMORY_S3_BUCKET   = aws_s3_bucket.memory.bucket
+      AWS_REGION         = var.aws_region
     }
   }
 }
