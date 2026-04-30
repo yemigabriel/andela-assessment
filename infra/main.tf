@@ -106,6 +106,7 @@ resource "aws_lambda_function" "backend" {
     variables = {
       OPENAI_API_KEY     = var.openai_api_key
       CORS_ALLOW_ORIGINS = var.cors_allow_origins
+      MEMORY_DIR         = "/tmp/memory"
       MEMORY_S3_BUCKET   = aws_s3_bucket.memory.bucket
     }
   }
@@ -191,6 +192,8 @@ resource "null_resource" "build_and_upload_frontend" {
     command = <<EOT
       echo "Building frontend..."
       cd ../frontend
+
+      export NEXT_PUBLIC_API_URL=$(terraform output -raw api_gateway_url)
 
       npm install
       npm run build

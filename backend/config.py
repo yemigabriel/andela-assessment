@@ -1,4 +1,5 @@
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -13,7 +14,10 @@ class Settings(BaseSettings):
     agent_name: str = "Meridian Electronics Support Agent"
     cors_origins: str = Field(default="http://localhost:3000", alias="CORS_ALLOW_ORIGINS")
     cors_origin_regex: str = r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
-    memory_dir: Path = Path("memory")
+    memory_dir: Path = Field(
+        default_factory=lambda: Path(os.getenv("MEMORY_DIR", "memory")),
+        alias="MEMORY_DIR",
+    )
     memory_s3_bucket: str | None = Field(default=None, alias="MEMORY_S3_BUCKET")
     aws_region: str | None = Field(default=None, alias="AWS_REGION")
 
