@@ -1,3 +1,4 @@
+import json
 from functools import lru_cache
 from pathlib import Path
 
@@ -9,6 +10,8 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4.1-mini"
     mcp_server_url: str = "https://order-mcp-74afyau24q-uc.a.run.app/mcp"
     agent_name: str = "Meridian Electronics Support Agent"
+    cors_origins: str = "http://localhost:3000"
+    cors_origin_regex: str = r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
     memory_dir: Path = Path("memory")
     memory_s3_bucket: str | None = None
     aws_region: str | None = None
@@ -18,6 +21,14 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    def get_cors_origins(self) -> list[str]:
+        stripped = self.cors_origins.strip()
+        if not stripped:
+            return []
+        if stripped.startswith("["):
+            return [str(item) for item in json.loads(stripped)]
+        return [item.strip() for item in stripped.split(",") if item.strip()]
 
 
 @lru_cache
