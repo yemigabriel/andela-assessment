@@ -217,6 +217,16 @@ What `scripts/deploy.sh` does:
 4. runs `terraform init`
 5. runs `terraform apply`
 
+Remote state for shared deploys:
+
+```bash
+export TF_STATE_BUCKET="your-terraform-state-bucket"
+export TF_STATE_LOCK_TABLE="your-terraform-lock-table"
+export TF_STATE_KEY="meridian-support/terraform.tfstate"
+```
+
+When `TF_STATE_BUCKET` and `TF_STATE_LOCK_TABLE` are set, `scripts/deploy.sh` reconfigures Terraform to use an S3 backend with DynamoDB locking. This is the recommended setup for GitHub Actions and any shared deployment workflow.
+
 ## CI
 
 Workflow:
@@ -227,6 +237,13 @@ On push / pull request:
 - runs `bash scripts/test.sh`
 - installs frontend dependencies with `npm ci`
 - runs `npm run build`
+
+Deploy job secrets:
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `OPENAI_API_KEY`
+- `TF_STATE_BUCKET`
+- `TF_STATE_LOCK_TABLE`
 
 ## Technical decisions
 
@@ -239,4 +256,3 @@ Why memory is local-first:
 - simple local development
 - simple JSON format
 - S3 sync layered on without changing the app contract
-

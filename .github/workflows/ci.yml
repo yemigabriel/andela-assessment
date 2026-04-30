@@ -82,7 +82,11 @@ jobs:
       - name: Deploy infrastructure and application
         run: bash scripts/deploy.sh
         env:
+          AWS_REGION: eu-west-1
           CI: "true"
           TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
           TF_VAR_cors_allow_origins: http://localhost:3000
           TF_VAR_cors_allow_origin_regex: ^https://.*\.cloudfront\.net$|^https?://(localhost|127\.0\.0\.1)(:\d+)?$
+          TF_STATE_BUCKET: ${{ secrets.TF_STATE_BUCKET }}
+          TF_STATE_LOCK_TABLE: ${{ secrets.TF_STATE_LOCK_TABLE }}
+          TF_STATE_KEY: meridian-support/terraform.tfstate
