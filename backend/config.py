@@ -2,19 +2,20 @@ import json
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    openai_api_key: str
+    openai_api_key: str = Field(alias="OPENAI_API_KEY")
     openai_model: str = "gpt-4.1-mini"
     mcp_server_url: str = "https://order-mcp-74afyau24q-uc.a.run.app/mcp"
     agent_name: str = "Meridian Electronics Support Agent"
-    cors_origins: str = "http://localhost:3000"
+    cors_origins: str = Field(default="http://localhost:3000", alias="CORS_ALLOW_ORIGINS")
     cors_origin_regex: str = r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
     memory_dir: Path = Path("memory")
-    memory_s3_bucket: str | None = None
-    aws_region: str | None = None
+    memory_s3_bucket: str | None = Field(default=None, alias="MEMORY_S3_BUCKET")
+    aws_region: str | None = Field(default=None, alias="AWS_REGION")
 
     model_config = SettingsConfigDict(
         env_file=".env",

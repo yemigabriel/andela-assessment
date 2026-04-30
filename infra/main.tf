@@ -23,6 +23,23 @@ resource "aws_s3_bucket_website_configuration" "frontend" {
   }
 }
 
+resource "aws_s3_bucket_policy" "frontend_public_read" {
+  bucket = aws_s3_bucket.frontend.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AllowPublicReadForWebsiteAssets"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = ["s3:GetObject"]
+        Resource  = "${aws_s3_bucket.frontend.arn}/*"
+      }
+    ]
+  })
+}
+
 resource "aws_s3_bucket" "memory" {
   bucket = var.memory_bucket_name
 }
@@ -76,10 +93,10 @@ resource "aws_iam_role_policy" "lambda_memory_access" {
 }
 
 resource "aws_lambda_function" "backend" {
-  function_name = "${var.project_name}-backend"
+  function_name = var.backend_function_name
   role          = aws_iam_role.lambda_exec.arn
   filename      = var.lambda_package_path
-  handler       = "backend.main.app"
+  handler       = "backend.main.lambda_handler"
   runtime       = "python3.12"
   timeout       = 30
 
@@ -90,7 +107,6 @@ resource "aws_lambda_function" "backend" {
       OPENAI_API_KEY     = var.openai_api_key
       CORS_ALLOW_ORIGINS = var.cors_allow_origins
       MEMORY_S3_BUCKET   = aws_s3_bucket.memory.bucket
-      AWS_REGION         = var.aws_region
     }
   }
 }
@@ -168,4 +184,27 @@ resource "aws_cloudfront_distribution" "frontend" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+}
+
+resource "null_resource" "build_and_upload_frontend" {
+  provisioner "local-exec" {
+    command = <<EOT
+      echo "Building frontend..."
+      cd ../frontend
+
+      npm install
+      npm run build
+
+      echo "Uploading to S3..."
+      aws s3 sync out/ s3://${aws_s3_bucket.frontend.bucket} --delete
+    EOT
+  }
+
+  triggers = {
+    always_run = timestamp()
+  }
+
+  depends_on = [
+    aws_s3_bucket.frontend
+  ]
 }

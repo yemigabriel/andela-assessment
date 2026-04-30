@@ -7,17 +7,25 @@ variable "project_name" {
 variable "aws_region" {
   description = "AWS region for deployment"
   type        = string
-  default     = "us-east-1"
+  default     = "eu-west-1"
 }
 
 variable "frontend_bucket_name" {
   description = "S3 bucket name for frontend static assets"
   type        = string
+  default     = "meridian-frontend-yemi-001"
+}
+
+variable "backend_function_name" {
+  description = "Lambda function name for backend deployment"
+  type        = string
+  default     = "meridian-backend"
 }
 
 variable "memory_bucket_name" {
   description = "S3 bucket name for conversation memory storage"
   type        = string
+  default     = "meridian-memory-yemi-001"
 }
 
 variable "lambda_package_path" {

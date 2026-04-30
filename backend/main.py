@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from mangum import Mangum
 
 from backend.config import get_settings
 from backend.api.routes import router
@@ -15,3 +16,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(router)
+
+lambda_handler = Mangum(app)
