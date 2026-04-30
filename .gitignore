@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+
+node_modules/
+.next/
+
+.env*
+*.pem
+*.key
+
+.terraform/
+*.tfstate*
+
+.DS_Store
+.vscode/
