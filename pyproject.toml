@@ -1,0 +1,11 @@
+[project]
+name = "andela-assessment"
+version = "0.1.0"
+description = "Meridian Electronics customer support chatbot assessment"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.28.1",
+]
+
+[tool.uv]
+package = false
