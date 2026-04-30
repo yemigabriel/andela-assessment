@@ -13,6 +13,10 @@ Architecture:
 System flow:
 - Browser UI -> FastAPI backend -> OpenAI Agents SDK -> MCP server -> response
 
+## Preview
+<img width="100%" alt="Meridian Electronics Chatbot" src="https://github.com/user-attachments/assets/3078c013-7c2d-48a8-9895-46372bcfd7ac" />
+
+
 ## Core stack
 
 Backend:
