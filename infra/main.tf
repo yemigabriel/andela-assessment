@@ -104,10 +104,11 @@ resource "aws_lambda_function" "backend" {
 
   environment {
     variables = {
-      OPENAI_API_KEY     = var.openai_api_key
-      CORS_ALLOW_ORIGINS = var.cors_allow_origins
-      MEMORY_DIR         = "/tmp/memory"
-      MEMORY_S3_BUCKET   = aws_s3_bucket.memory.bucket
+      OPENAI_API_KEY          = var.openai_api_key
+      CORS_ALLOW_ORIGINS      = var.cors_allow_origins
+      CORS_ALLOW_ORIGIN_REGEX = var.cors_allow_origin_regex
+      MEMORY_DIR              = "/tmp/memory"
+      MEMORY_S3_BUCKET        = aws_s3_bucket.memory.bucket
     }
   }
 }

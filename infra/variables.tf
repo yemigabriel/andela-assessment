@@ -45,3 +45,9 @@ variable "cors_allow_origins" {
   type        = string
   default     = "http://localhost:3000"
 }
+
+variable "cors_allow_origin_regex" {
+  description = "Regex-based CORS origin allowlist for the backend"
+  type        = string
+  default     = "^https://.*\\.cloudfront\\.net$|^https?://(localhost|127\\.0\\.0\\.1)(:\\d+)?$"
+}

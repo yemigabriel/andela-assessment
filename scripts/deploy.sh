@@ -24,4 +24,9 @@ zip -rq "$ZIP_PATH" .
 
 cd "$ROOT_DIR/infra"
 terraform init
-terraform apply
+
+if [[ "${CI:-}" == "true" ]]; then
+  terraform apply -auto-approve
+else
+  terraform apply
+fi
