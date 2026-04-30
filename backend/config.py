@@ -13,7 +13,10 @@ class Settings(BaseSettings):
     mcp_server_url: str = "https://order-mcp-74afyau24q-uc.a.run.app/mcp"
     agent_name: str = "Meridian Electronics Support Agent"
     cors_origins: str = Field(default="http://localhost:3000", alias="CORS_ALLOW_ORIGINS")
-    cors_origin_regex: str = r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
+    cors_origin_regex: str = Field(
+        default=r"^https://.*\.cloudfront\.net$|^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
+        alias="CORS_ALLOW_ORIGIN_REGEX",
+    )
     memory_dir: Path = Field(
         default_factory=lambda: Path(os.getenv("MEMORY_DIR", "memory")),
         alias="MEMORY_DIR",
@@ -25,6 +28,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore",
+        populate_by_name=True,
     )
 
     def get_cors_origins(self) -> list[str]:

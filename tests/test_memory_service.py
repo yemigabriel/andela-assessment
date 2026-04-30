@@ -26,7 +26,7 @@ async def test_append_turn_persists_expected_json_shape(tmp_path: Path) -> None:
     )
 
     assert len(messages) == 2
-    saved_file = tmp_path / f"{session_id}.json"
+    saved_file = service.memory_dir / f"{session_id}.json"
     assert saved_file.exists()
     saved_payload = saved_file.read_text(encoding="utf-8")
     assert '"role": "user"' in saved_payload

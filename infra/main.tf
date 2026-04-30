@@ -193,7 +193,7 @@ resource "null_resource" "build_and_upload_frontend" {
       echo "Building frontend..."
       cd ../frontend
 
-      export NEXT_PUBLIC_API_URL=$(terraform output -raw api_gateway_url)
+      export NEXT_PUBLIC_API_BASE_URL='${aws_apigatewayv2_api.backend.api_endpoint}'
 
       npm install
       npm run build
@@ -208,6 +208,7 @@ resource "null_resource" "build_and_upload_frontend" {
   }
 
   depends_on = [
-    aws_s3_bucket.frontend
+    aws_s3_bucket.frontend,
+    aws_apigatewayv2_stage.backend
   ]
 }

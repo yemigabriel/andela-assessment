@@ -90,7 +90,6 @@ export default function HomePage() {
             OpenAI Agents SDK and live MCP tools for products, customers, and orders.
           </p>
           <div className="chat-meta">
-            <span>API: {API_BASE_URL}</span>
             <span>Session: {sessionId ?? "new conversation"}</span>
           </div>
         </header>
